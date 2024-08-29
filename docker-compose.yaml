@@ -159,7 +159,7 @@ services:
 
   microservice1:
     container_name: microservice1
-    build: ./Microservice1
+    build: .
     ports:
       - "9989:9997"
     depends_on:
@@ -175,45 +175,45 @@ services:
     networks:
       - my-network
 
-  microservice2:
-    container_name: microservice2
-    build: ./Microservice2
-    ports:
-      - "9988:9998"
-    depends_on:
-      - postgres
-      - kafka-service
-      - microservice1
-
-    environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
-      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
-      OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
-      OTEL_METRICS_EXPORTER: none
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe4
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
-
-    networks:
-      - my-network
-
-  microservice3:
-    build: ./Microservice3
-    container_name: microservice3
-    ports:
-      - "9987:9999"
-    depends_on:
-      - postgres
-      - kafka-service
-      - microservice1
-    environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
-      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
-      OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
-      OTEL_METRICS_EXPORTER: none
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe5
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
-    networks:
-      - my-network
+#  microservice2:
+#    container_name: microservice2
+#    build: ./Microservice2
+#    ports:
+#      - "9988:9998"
+#    depends_on:
+#      - postgres
+#      - kafka-service
+#      - microservice1
+#
+#    environment:
+#      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
+#      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
+#      OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
+#      OTEL_METRICS_EXPORTER: none
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe4
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
+#
+#    networks:
+#      - my-network
+#
+#  microservice3:
+#    build: ./Microservice3
+#    container_name: microservice3
+#    ports:
+#      - "9987:9999"
+#    depends_on:
+#      - postgres
+#      - kafka-service
+#      - microservice1
+#    environment:
+#      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
+#      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
+#      OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
+#      OTEL_METRICS_EXPORTER: none
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe5
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
+#    networks:
+#      - my-network
 
 networks:
   my-network:
