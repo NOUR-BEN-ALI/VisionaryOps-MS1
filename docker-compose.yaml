@@ -1,31 +1,6 @@
 version: '3'
 
 services:
-#  jenkins:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    privileged: true
-#    user: root
-#    ports:
-#      - 8080:8080
-#      - 50000:50000
-#    container_name: jenkins
-#    volumes:
-#      - ./docker/jenkins/jenkins_home:/var/jenkins_home
-#      - ./docker/jenkins/casc_configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml:rw
-#      - /var/run/docker.sock:/var/run/docker.sock
-##      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-##      - ./docker/tempo/tempo.yml:/etc/tempo/tempo.yml
-#
-#
-#    environment:
-#      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
-#      - ADMIN_PASSWORD=admin
-#    networks:
-#      - my-network
-#
-
   zookeeper:
     image: wurstmeister/zookeeper:latest
     container_name: zookeeper
@@ -103,7 +78,7 @@ services:
   grafana:
     image: grafana/grafana:10.1.0
     container_name: grafana
-    volumes:  # Utilisation des volumes pour persister les données de Grafana
+    volumes:
       - ./docker/grafana/provisioning:/etc/grafana/provisioning
       - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
     environment:
@@ -128,7 +103,7 @@ services:
     ports:
       - "3110:3100"  # Tempo as Grafana data source
       - "4317:4317" # OTLP gRPC
-      # - "9411:9411" # Zipkin (if needed)
+      # - "9411:9411" # Zipkin
     networks:
       - my-network
 
@@ -166,67 +141,21 @@ services:
       - postgres
       - kafka-service
     environment:
-     OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
+     OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
-     OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
+     OTEL_EXPORTER_OTLP_TIMEOUT: "3000"
      OTEL_METRICS_EXPORTER: "prometheus"
      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe3
      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
     networks:
       - my-network
 
-#  microservice2:
-#    container_name: microservice2
-#    build: ./Microservice2
-#    ports:
-#      - "9988:9998"
-#    depends_on:
-#      - postgres
-#      - kafka-service
-#      - microservice1
-#
-#    environment:
-#      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
-#      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
-#      OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
-#      OTEL_METRICS_EXPORTER: none
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe4
-#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
-#
-#    networks:
-#      - my-network
-#
-#  microservice3:
-#    build: ./Microservice3
-#    container_name: microservice3
-#    ports:
-#      - "9987:9999"
-#    depends_on:
-#      - postgres
-#      - kafka-service
-#      - microservice1
-#    environment:
-#      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"  # Endpoint for Tempo OTLP receiver
-#      OTEL_EXPORTER_OTLP_ENDPOINT_LOGS_ENDPOINT: "http://collector:4317"
-#      OTEL_EXPORTER_OTLP_TIMEOUT: "3000"  # Optional: set timeout in milliseconds
-#      OTEL_METRICS_EXPORTER: none
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/basepfe5
-#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
-#    networks:
-#      - my-network
-
 networks:
   my-network:
 
-volumes:  # Définition des volumes
+volumes:
   postgres_data:
   prometheus_data:
   grafana_data:
   kafka_data:
   tempo-data:
-#  sonarqube_data:
-#  sonarqube_extensions:
-#  sonarqube_logs:
-#  postgresql:
-#  postgresql_data:
-#  nexus_data:
